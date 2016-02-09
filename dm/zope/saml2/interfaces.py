@@ -13,6 +13,7 @@ from dm.saml2.util import SAML_CLASSES, normalize_class, \
      NAMEID_FORMATS
 
 from util import vocab_from_urns
+from zope.component.interfaces import IObjectEvent
 
 _ = MessageFactory('dm_zope_saml2')
 
@@ -755,3 +756,9 @@ class IUrlCustomizer(Interface):
     cannot use a standard `IUrl` adapter in an implementation.
     """
 
+
+#############################################################################
+## Event interface
+
+class ISamlUserAuthenticated(IObjectEvent):
+    """User got authenticated with SAML2 IDP"""

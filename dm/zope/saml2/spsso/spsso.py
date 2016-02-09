@@ -28,6 +28,8 @@ from dm.zope.saml2.sso import Sso
 from dm.zope.saml2.role import Target
 from dm.zope.saml2.attribute import \
      HomogenousContainer, AttributeConsumingService
+from zope.event import notify
+from dm.zope.saml2.events import SamlUserAuthenticated
 
 
 class SimpleSpsso(HomogenousContainer, Sso):
@@ -116,6 +118,7 @@ class SimpleSpsso(HomogenousContainer, Sso):
       )
     info["user_id"] = self.format_user_id(info)
     self._set_cookie(self.session_cookie_name, info)
+    notify(SamlUserAuthenticated(info["user_id"]))
 
   def _process_AttributeStatement(self, subject, s):
     # build map of known attributes -- we might want to cache this information
