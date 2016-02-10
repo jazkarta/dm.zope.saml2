@@ -118,7 +118,6 @@ class SimpleSpsso(HomogenousContainer, Sso):
       )
     info["user_id"] = self.format_user_id(info)
     self._set_cookie(self.session_cookie_name, info)
-    notify(SamlUserAuthenticated(info["user_id"]))
 
   def _process_AttributeStatement(self, subject, s):
     # build map of known attributes -- we might want to cache this information
@@ -138,6 +137,7 @@ class SimpleSpsso(HomogenousContainer, Sso):
         att.AttributeValue, d.is_sequence, d.type
         )
     self._set_cookie(self.attribute_cookie_name, info)
+    notify(SamlUserAuthenticated())
 
 
 
