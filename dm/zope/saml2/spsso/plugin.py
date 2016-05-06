@@ -27,6 +27,11 @@ from dm.zope.saml2.interfaces import ISimpleSpssoPluginSchema, \
 
 from spsso import SimpleSpsso
 
+try:
+    from Products.PlonePAS.utils import getCharset
+except ImportError:
+    getCharset = lambda rv: 'utf-8'
+
 
 class DetachedSimpleSpssoPlugin(BasePlugin, SchemaConfigured):
   """Spsso plugin working with a separate `Spsso`."""
@@ -122,7 +127,6 @@ class DetachedSimpleSpssoPlugin(BasePlugin, SchemaConfigured):
     info = self.get_spsso().get_attributes(self.REQUEST) or {}
     # the stupid Plone is unable to handle unicode properties
     #  must encode them
-    from Products.PlonePAS.utils import getCharset
     charset = getCharset(self)
     for k,v in info.items():
       if isinstance(v, unicode): info[k] = v.encode(charset)
