@@ -22,6 +22,7 @@ from dm.zope.schema.schema import SchemaConfigured
 
 from dm.zope.saml2.permission import manage_saml
 from dm.zope.saml2.util import datetime_rfc822
+from dm.zope.saml2.util import getCharset
 from dm.zope.saml2.interfaces import ISimpleSpssoPluginSchema, \
      ISimpleSpsso
 
@@ -122,7 +123,6 @@ class DetachedSimpleSpssoPlugin(BasePlugin, SchemaConfigured):
     info = self.get_spsso().get_attributes(self.REQUEST) or {}
     # the stupid Plone is unable to handle unicode properties
     #  must encode them
-    from Products.PlonePAS.utils import getCharset
     charset = getCharset(self)
     for k,v in info.items():
       if isinstance(v, unicode): info[k] = v.encode(charset)

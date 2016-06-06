@@ -4,6 +4,9 @@ from zope.interface import alsoProvides
 from zope.component import getUtility
 from persistent import Persistent
 
+from Products.CMFCore.utils import getToolByName
+
+
 def datetime_rfc822(dt):
   """format *dt* as an rfc822 date in GMT."""
   # this should be easier!
@@ -11,6 +14,19 @@ def datetime_rfc822(dt):
   from email.Utils import formatdate
   
   return formatdate(mktime(dt.timetuple()), usegmt=True)
+
+
+def getCharset(context):
+  """Returns the site default charset, or utf-8.
+  """
+  properties = getToolByName(context, 'portal_properties', None)
+  if properties is not None:
+    site_properties = getattr(properties, 'site_properties', None)
+    if site_properties is not None:
+      return site_properties.getProperty('default_charset')
+    elif hasattr(properties, 'default_charset'):
+      return properties.getProperty('default_charset') # CMF
+  return 'utf-8'
 
 
 def vocab_from_urns(urns):
