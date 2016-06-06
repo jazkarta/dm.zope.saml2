@@ -21,6 +21,7 @@ from dm.zope.schema.schema import SchemaConfigured
 from dm.zope.schema.z2.constructor import \
      add_form_factory, SchemaConfiguredZmiAddForm
 
+from dm.zope.saml2.util import getCharset
 from dm.saml2.util import xs_convert_to_xml
 
 from interfaces import IProvidedAttributeSchema, IRequestedAttributeSchema, \
@@ -175,7 +176,6 @@ class SimpleAttributeProvider(AttributeContainer, Role):
       # Plone stupidly converts unicode properties to `str`
       if isinstance(v, str) and d.type == "string":
         # convert back to unicode
-        from Products.PlonePAS.utils import getCharset
         v = unicode(v, getCharset(self))
       # potentially, more encodings are necessary
       xv = xs_convert_to_xml(d.type, v, AttributeValue)
