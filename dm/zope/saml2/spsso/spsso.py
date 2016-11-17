@@ -98,6 +98,7 @@ class SimpleSpsso(HomogenousContainer, Sso):
     return self.deliver(
       Target(eid=idp, role="idpsso", endpoint="SingleSignOnService",
              sign_msg_attr="WantAuthnRequestsSigned",
+             binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
              ),
       None, req, relay_state
       )
