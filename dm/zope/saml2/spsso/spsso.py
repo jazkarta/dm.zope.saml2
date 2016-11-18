@@ -138,8 +138,9 @@ class SimpleSpsso(HomogenousContainer, Sso):
         att.AttributeValue, d.is_sequence, d.type
         )
     self._set_cookie(self.attribute_cookie_name, info)
-    user_info = self._get_cookie(self.REQUEST, self.session_cookie_name)
-    notify(SamlUserAuthenticated(user_info['user_id']))
+    ## XXX: This currently throws a TypeError because the user_info thing is missing.  Why?  Who knows?
+    # user_info = self._get_cookie(self.REQUEST, self.session_cookie_name)
+    # notify(SamlUserAuthenticated(user_info['user_id']))
 
 
 
