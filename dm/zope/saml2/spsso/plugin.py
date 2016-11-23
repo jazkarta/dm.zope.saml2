@@ -54,8 +54,13 @@ class DetachedSimpleSpssoPlugin(BasePlugin, SchemaConfigured):
     if not credentials.get("saml"): return
     spsso = self.get_spsso()
     info = spsso.get_authentication_session(self.REQUEST)
-    if info is not None:
-      uid = info["user_id"]
+    attrinfo = spsso.get_attributes(self.REQUEST)
+    if info is not None and attrinfo is not None:
+      # XXX: The friendly name of the SAML2 attribute we use as our user_id
+      # should come from somewhere instead of being hard-coded
+      uid = attrinfo.get('eduPersonPrincipalName', info.get('user_id'))
+      if uid is None:
+        return
       return (uid, uid)
 
   def resetCredentials(self, request, response):
