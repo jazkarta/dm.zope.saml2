@@ -30,7 +30,7 @@ class Store(Base, Store, Explicit):
 
 class Role(RelayStateManager):
   """Generic role infrastructure."""
-  
+
   def __init__(self):
     RelayStateManager.__init__(
       self, Store(IRelayStateStore(self, None) or OOBTree())
@@ -90,8 +90,12 @@ class Role(RelayStateManager):
           continue # not valid
         if scd.InResponseTo != context.rsp.InResponseTo:
           continue # not valid
-        if scd.Address and context.zrequest.getClientAddr() != scd.Address:
-          continue # not valid
+        # XXX Jazkarta Note: NYU is on a private network, so we get an address
+        # mismatch here. At the point at which we want to remove
+        # client-specific customizations, we'll have to monkey patch this
+        # method or find some other means of overriding this check:
+        # if scd.Address and context.zrequest.getClientAddr() != scd.Address:
+        #   continue # not valid
         ok = True
         break
       if not ok:
