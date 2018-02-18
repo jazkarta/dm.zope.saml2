@@ -12,6 +12,7 @@ from dm.saml2.binding.httppost import decode as post_decode
 from dm.saml2.pyxb.protocol import CreateFromDocument
 
 from dm.zope.saml2.role import logging_enabled
+from dm.zope.saml2.exception import SamlError
 
 logger = getLogger(__name__)
 
