@@ -62,7 +62,7 @@ class RoleView(BrowserView):
       logger.info(
         "incoming saml message at %s via binding %s with relay state %s:\n%s"
         % (url,
-           kw.get("bindung"),
+           kw.get("binding"),
            kw.get("relay_state"),
            saml
            )
