@@ -19,14 +19,15 @@ def datetime_rfc822(dt):
 def getCharset(context):
   """Returns the site default charset, or utf-8.
   """
+  charset = None
   properties = getToolByName(context, 'portal_properties', None)
   if properties is not None:
     site_properties = getattr(properties, 'site_properties', None)
     if site_properties is not None:
-      return site_properties.getProperty('default_charset')
+      charset = site_properties.getProperty('default_charset')
     elif hasattr(properties, 'default_charset'):
-      return properties.getProperty('default_charset') # CMF
-  return 'utf-8'
+      charset = properties.getProperty('default_charset') # CMF
+  return charset or 'utf-8'
 
 
 def vocab_from_urns(urns):
