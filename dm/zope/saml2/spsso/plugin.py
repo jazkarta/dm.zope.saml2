@@ -18,6 +18,8 @@ from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.PluggableAuthService import \
      registerMultiPlugin
 
+from zope.globalrequest import getRequest
+
 from dm.zope.schema.schema import SchemaConfigured
 
 from dm.zope.saml2.permission import manage_saml
@@ -130,7 +132,8 @@ class DetachedSimpleSpssoPlugin(BasePlugin, SchemaConfigured):
         ))
 
   def getPropertiesForUser(self, user, request=None):
-    info = self.get_spsso().get_attributes(self.REQUEST) or {}
+    req = request or getattr(self, 'REQUEST', None) or getRequest()
+    info = self.get_spsso().get_attributes(req) or {}
     # the stupid Plone is unable to handle unicode properties
     #  must encode them
     charset = getCharset(self)
