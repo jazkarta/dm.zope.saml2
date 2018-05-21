@@ -9,6 +9,8 @@ from BTrees.OOBTree import OOBTree
 from ExtensionClass import Base
 from Acquisition import Explicit
 
+from Products.CMFCore.utils import getToolByName
+
 from dm.saml2.pyxb.protocol import Response
 from dm.saml2.pyxb.assertion import NameID, \
      SubjectType, Subject, SubjectConfirmation, \
