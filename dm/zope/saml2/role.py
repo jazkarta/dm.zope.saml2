@@ -55,6 +55,14 @@ class Role(RelayStateManager):
       return self.REQUEST.response.redirect(fail)
     # success response
     for ass in rsp.Assertion: self._process_assertion(ass, context)
+
+    # Do not send back to the login (infinity loop) and do not send the user
+    # out of the portal
+    pu_tool = getToolByName(self, "portal_url")
+    purl = pu_tool()
+    if '/login' in ok or not pu_tool.isURLInPortal(ok):
+      ok = purl
+
     return self.REQUEST.response.redirect(ok)
 
   def _resolve_relay_state(self, relay_state):
