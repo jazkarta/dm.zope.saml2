@@ -60,7 +60,9 @@ class DetachedSimpleSpssoPlugin(BasePlugin, SchemaConfigured):
     if info is not None and attrinfo is not None:
       # XXX: The friendly name of the SAML2 attribute we use as our user_id
       # should come from somewhere instead of being hard-coded
-      uid = attrinfo.get('eduPersonPrincipalName', info.get('user_id'))
+      uid = attrinfo.get('uid',
+            attrinfo.get('eduPersonPrincipalName',
+            info.get('user_id')))
       if uid is None:
         return
       return (uid, uid)
