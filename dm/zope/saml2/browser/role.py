@@ -1,16 +1,16 @@
 # Copyright (C) 2011-2012 by Dr. Dieter Maurer <dieter@handshake.de>
 """Role views."""
 from logging import getLogger
-
 from transaction import abort
 
+from plone.protect.interfaces import IDisableCSRFProtection
 from Products.Five.browser import BrowserView
+from zope.interface import alsoProvides
 
 from dm.saml2.binding.soap import http_request as soap_request
 from dm.saml2.binding.httpredirect import decode as redirect_decode
 from dm.saml2.binding.httppost import decode as post_decode
 from dm.saml2.pyxb.protocol import CreateFromDocument
-
 from dm.zope.saml2.role import logging_enabled
 from dm.zope.saml2.exception import SamlError
 
@@ -19,7 +19,7 @@ logger = getLogger(__name__)
 
 class RoleView(BrowserView):
   """Role view.
-  
+
   It implements the various bindings (the incoming part)
   and delegates request processing to its `IRole` context.
   """
@@ -44,6 +44,7 @@ class RoleView(BrowserView):
     return self._process(msg, binding="redirect", relay_state=relay_state)
 
   def post(self):
+    alsoProvides(self.request, IDisableCSRFProtection)
     msg, relay_state = post_decode(self.request.form)
     return self._process(msg, binding="post", relay_state=relay_state)
 
