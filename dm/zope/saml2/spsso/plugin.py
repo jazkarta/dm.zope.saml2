@@ -73,9 +73,14 @@ class DetachedSimpleSpssoPlugin(BasePlugin, SchemaConfigured):
 
   def challenge(self, request, response):
     url = self.absolute_url()
-    came_from = "%s?%s" % (
-      request["ACTUAL_URL"], request.get("QUERY_STRING","")
-      )
+    if request.get("came_from"):
+      came_from = request["came_from"]
+      # If a came_from cookie was set expire it
+      response.expireCookie("came_from")
+    else:
+      came_from = "%s?%s" % (
+        request["ACTUAL_URL"], request.get("QUERY_STRING","")
+        )
     idp = self.determine_idp()
     if idp:
       # we know the idp -- perform authentication
@@ -116,7 +121,11 @@ class DetachedSimpleSpssoPlugin(BasePlugin, SchemaConfigured):
     """explicit login request."""
     pu_tool = getToolByName(self, "portal_url")
     r = self.REQUEST; purl = pu_tool()
-    came_from = r.get("HTTP_REFERER") or purl
+    if r.get('came_from'):
+      came_from = r['came_from']
+      r.response.expireCookie('came_from')
+    else:
+      came_from = r.get("HTTP_REFERER") or purl
 
     if not pu_tool.isURLInPortal(came_from):
       came_from = purl
