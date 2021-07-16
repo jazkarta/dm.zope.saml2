@@ -64,5 +64,23 @@
      factory=".role.NameidFormatSupport"
      />
 
+   <!-- formlib widget support for ZMI -->
+   <adapter
+     for="zope.schema.interfaces.ITuple
+          zope.schema.interfaces.IVocabularyTokenized
+          zope.publisher.interfaces.browser.IBrowserRequest"
+     provides="zope.formlib.interfaces.ISimpleInputWidget"
+     factory="zope.formlib.widgets.OrderedMultiSelectWidget"
+     permission="zope.Public"
+     />
+
+   <adapter
+     for="zope.schema.interfaces.ITuple
+          zope.schema.interfaces.IBaseVocabulary
+          zope.publisher.interfaces.browser.IBrowserRequest"
+     provides="zope.formlib.interfaces.IDisplayWidget"
+     factory="zope.formlib.widgets.SetDisplayWidget"
+     permission="zope.Public"
+     />
 
 </configure>
