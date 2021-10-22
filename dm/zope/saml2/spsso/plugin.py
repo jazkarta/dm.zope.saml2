@@ -6,7 +6,7 @@ from zope.interface import implements
 
 from AccessControl import ClassSecurityInfo
 from ZTUtils import make_query
-from Globals import InitializeClass
+from AccessControl.class_init import InitializeClass
 
 from Products.CMFCore.utils import getToolByName
 from Products.PluggableAuthService.interfaces.plugins \

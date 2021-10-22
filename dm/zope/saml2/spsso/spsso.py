@@ -10,9 +10,7 @@ from zope.interface import implements
 from zope.component import getUtility
 
 from AccessControl import ClassSecurityInfo
-from Globals import InitializeClass
-from OFS.SimpleItem import SimpleItem
-from ZTUtils import make_query
+from AccessControl.class_init import InitializeClass
 from persistent.list import PersistentList
 
 from dm.saml2.util import normalize_class, compare_classes, pyxb_to_datetime, \
