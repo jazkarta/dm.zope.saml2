@@ -12,7 +12,7 @@ from dm.saml2.util import SAML_CLASSES, normalize_class, \
      XSCHEMA_BASE_TYPES, \
      NAMEID_FORMATS
 
-from util import vocab_from_urns
+from .util import vocab_from_urns
 from zope.component.interfaces import IObjectEvent
 
 _ = MessageFactory('dm_zope_saml2')
