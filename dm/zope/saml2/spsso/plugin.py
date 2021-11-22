@@ -2,7 +2,7 @@
 """PAS plugins for SAML2 based authentication (Spsso)."""
 from datetime import datetime
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from AccessControl import ClassSecurityInfo
 from ZTUtils import make_query
@@ -28,9 +28,10 @@ from dm.zope.saml2.util import getCharset
 from dm.zope.saml2.interfaces import ISimpleSpssoPluginSchema, \
      ISimpleSpsso
 
-from spsso import SimpleSpsso
+from dm.zope.saml2.spsso.spsso import SimpleSpsso
 
 
+@implementer(ISimpleSpssoPluginSchema)
 class DetachedSimpleSpssoPlugin(BasePlugin, SchemaConfigured):
   """Spsso plugin working with a separate `Spsso`."""
 
@@ -40,7 +41,6 @@ class DetachedSimpleSpssoPlugin(BasePlugin, SchemaConfigured):
   security.declareObjectProtected(manage_saml)
   security.declarePublic("login")
 
-  implements(ISimpleSpssoPluginSchema)
 
   manage_options = (
     {"label" : "View", "action" : "@@view"},

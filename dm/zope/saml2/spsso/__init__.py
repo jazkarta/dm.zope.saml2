@@ -47,5 +47,5 @@ be available in the context of each plugin and the role.
 """
 
 def initialize(context):
-  from spsso import initialize; initialize(context)
-  from plugin import initialize; initialize(context)
+  from dm.zope.saml2.spsso.spsso import initialize; initialize(context)
+  from dm.zope.saml2.spsso.plugin import initialize; initialize(context)

@@ -2,7 +2,7 @@
 """The Idpsso implementation."""
 from datetime import timedelta
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from AccessControl import ClassSecurityInfo
 from OFS.SimpleItem import SimpleItem
@@ -25,6 +25,7 @@ from dm.zope.saml2.attribute import SimpleAttributeProvider
 
 
 # might want to implement as a tool
+@implementer(ISimpleIdpsso)
 class SimpleIdpsso(SimpleItem, SchemaConfigured, Sso):
   """Zope2 implementation for a simple SAML Idpsso.
 
@@ -36,7 +37,6 @@ class SimpleIdpsso(SimpleItem, SchemaConfigured, Sso):
   # how long should authentication responses be valid
   BROWSER_SSO_VALIDITY = timedelta(minutes=5)
 
-  implements(ISimpleIdpsso)
 
   SC_SCHEMAS = (ISimpleIdpsso,)
 
