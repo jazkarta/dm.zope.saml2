@@ -280,8 +280,8 @@ class SimpleSpsso(HomogenousContainer, Sso):
       bytes = urandom(kl)
     except ImportError: # no "urandom"
       from random import randrange
-      bytes = [chr(randrange(256)) for i in range(kl)]
-    return "".join(bytes)
+      bytes = b"".join([chr(randrange(256)) for i in range(kl)])
+    return bytes
 
   def clear_keys(self):
     del self.__keys[:]
