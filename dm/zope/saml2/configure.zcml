@@ -65,6 +65,8 @@
      />
 
    <!-- formlib widget support for ZMI -->
+   <include package="zope.formlib" />
+
    <adapter
      for="zope.schema.interfaces.ITuple
           zope.schema.interfaces.IVocabularyTokenized

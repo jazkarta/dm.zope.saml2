@@ -1,12 +1,8 @@
 # Copyright (C) 2011-2012 by Dr. Dieter Maurer <dieter@handshake.de>
 """Idp related views."""
-from urllib import quote, unquote
-
 from zope.schema import Choice, ASCIILine
 from zope.formlib.form import Fields, action
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
-
-from Products.CMFCore.utils import getToolByName
 
 from dm.zope.schema.z2.form import PageForm
 from dm.zope.schema.widget import GenericTextWidget, make_hidden

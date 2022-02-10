@@ -3,7 +3,7 @@
 from logging import getLogger
 from os import environ
 
-from zope.interface import implements
+from zope.interface import implementer
 from zope.component import getUtility
 from BTrees.OOBTree import OOBTree
 from ExtensionClass import Base
@@ -19,9 +19,9 @@ from dm.saml2.binding import SoapBinding, HttpPostBinding, HttpRedirectBinding
 from dm.saml2.util import normalize_nameid_format, utcnow, as_utc
 from dm.saml2.binding.util import Store, UnmanagedError, RelayStateManager
 
-from interfaces import ISamlAuthority, IHttpTransport, INameidFormatSupport, \
+from dm.zope.saml2.interfaces import ISamlAuthority, IHttpTransport, INameidFormatSupport, \
      IRelayStateStore
-from exception import SamlError
+from dm.zope.saml2.exception import SamlError
 
 logger = getLogger(__name__)
 
@@ -387,9 +387,9 @@ def move_handler(o, e):
 
 ###### NameID format support
 
+@implementer(INameidFormatSupport)
 class NameidFormatSupport(object):
   """Default name id format support."""
-  implements(INameidFormatSupport)
 
   def __init__(self, context): self.context = context
 

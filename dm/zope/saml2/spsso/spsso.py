@@ -3,10 +3,13 @@
 try: from hashlib import sha256 as digest_module
 except ImportError: import md5 as digest_module
 import hmac
-from cPickle import loads, dumps
+try:
+  from cPickle import loads, dumps
+except ImportError:
+  from pickle import loads, dumps
 from zlib import compress, decompress
 
-from zope.interface import implements
+from zope.interface import implementer
 from zope.component import getUtility
 
 from AccessControl import ClassSecurityInfo
@@ -30,10 +33,10 @@ from zope.event import notify
 from dm.zope.saml2.events import SamlUserAuthenticated
 
 
+@implementer(ISimpleSpsso)
 class SimpleSpsso(HomogenousContainer, Sso):
   """Zope 2 implementation of a simple SAML2 Spsso."""
 
-  implements(ISimpleSpsso)
 
   SC_SCHEMAS = (ISimpleSpsso,)
   CONTENT_TYPE = AttributeConsumingService
@@ -277,8 +280,8 @@ class SimpleSpsso(HomogenousContainer, Sso):
       bytes = urandom(kl)
     except ImportError: # no "urandom"
       from random import randrange
-      bytes = [chr(randrange(256)) for i in range(kl)]
-    return "".join(bytes)
+      bytes = b"".join([chr(randrange(256)) for i in range(kl)])
+    return bytes
 
   def clear_keys(self):
     del self.__keys[:]
@@ -329,9 +332,9 @@ def move_handler(o, e):
     sm.registerUtility(o, provided=ISimpleSpsso)
 
 
+@implementer(INameidFormatSupport)
 class NameidFormatSupport(object):
   """SPSSO name id format support."""
-  implements(INameidFormatSupport)
 
   def __init__(self, context): self.context = context
 

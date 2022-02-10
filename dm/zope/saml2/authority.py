@@ -1,14 +1,10 @@
 # Copyright (C) 2011-2012 by Dr. Dieter Maurer <dieter@handshake.de>
 """Authority and metadata."""
-from tempfile import NamedTemporaryFile
-
-from persistent import Persistent
-from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
 from AccessControl import ClassSecurityInfo
 #from Globals import InitializeClass
 
-from zope.interface import Interface, implements
+from zope.interface import Interface, implementer
 from zope.component import getUtility
 from zope.event import notify
 from zope.lifecycleevent import ObjectModifiedEvent
@@ -27,14 +23,14 @@ from dm.saml2.pyxb.metadata import EndpointType, IndexedEndpointType
 from dm.saml2 import signature
 from dm.saml2.util import utcnow
 
-from interfaces import ISamlAuthority, \
+from dm.zope.saml2.interfaces import ISamlAuthority, \
      IIdpssoRole, ISpssoRole, IApRole, IAuthnRole, IPdpRole, \
      INameidFormatSupport, \
      IUrlCustomizer
 
-from permission import manage_saml
-from util import ZodbSynchronized
-from entity import ManageableEntityMixin, EntityManagerMixin
+from dm.zope.saml2.permission import manage_saml
+from dm.zope.saml2.util import ZodbSynchronized
+from dm.zope.saml2.entity import ManageableEntityMixin, EntityManagerMixin
 
 
 # Note: `EntityByUrl` lacks a way to access the context for signature
@@ -55,9 +51,9 @@ class IEntityMetadata(Interface):
 #  a persistent list for internal purposes.
 #  This is okay as long as we use a persistent storage (as we do).
 #  Not using persistent classes here leads to less ZODB loads.
+@implementer(IEntityMetadata)
 class EntityMetadata(EntityMetadata):
   """extend basic `EntityMetadata` by `ObjectModified` events."""
-  implements(IEntityMetadata)
 
   def default_validity(self):
     return getUtility(ISamlAuthority).default_validity
@@ -99,6 +95,7 @@ class OwnEntity(ManageableEntityMixin, EntityBase):
     return getUtility(ISamlAuthority)
 
 
+@implementer(ISamlAuthority)
 class SamlAuthority(SchemaConfiguredEvolution, EntityManagerMixin,
                     SimpleItem, SchemaConfigured, MetadataRepository
                     ):
@@ -113,7 +110,6 @@ class SamlAuthority(SchemaConfiguredEvolution, EntityManagerMixin,
   """
   meta_type = "Saml authority"
 
-  implements(ISamlAuthority)
 
   INTERNAL_STORAGE_CLASS = PersistentMapping
   METADATA_STORAGE_CLASS = PersistentMapping

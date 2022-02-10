@@ -11,7 +11,7 @@ variant describing a requested attribute), a class managing attributes
 provider class."""
 from logging import getLogger
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from AccessControl import ClassSecurityInfo
 from OFS.SimpleItem import SimpleItem
@@ -24,11 +24,11 @@ from dm.zope.schema.z2.constructor import \
 from dm.zope.saml2.util import getCharset
 from dm.saml2.util import xs_convert_to_xml
 
-from interfaces import IProvidedAttributeSchema, IRequestedAttributeSchema, \
+from dm.zope.saml2.interfaces import IProvidedAttributeSchema, IRequestedAttributeSchema, \
      IItemSchema, IAttributeConsumingServiceSchema, \
      ISimpleAttributeProvider
-from permission import manage_saml
-from role import Role
+from dm.zope.saml2.permission import manage_saml
+from dm.zope.saml2.role import Role
 
 logger = getLogger(__name__)
 
@@ -43,10 +43,10 @@ class BaseAttribute(SchemaConfigured, SimpleItem):
     )
 
 
+@implementer(IRequestedAttributeSchema)
 class RequestedAttribute(BaseAttribute):
   meta_type = "Saml requested attribute"
 
-  implements(IRequestedAttributeSchema)
 
   SC_SCHEMAS = (IRequestedAttributeSchema,)
 
@@ -54,14 +54,15 @@ class RequestedAttribute(BaseAttribute):
   type = None
 
 
+@implementer(IProvidedAttributeSchema)
 class ProvidedAttribute(BaseAttribute):
   meta_type = "Saml provided attribute"
 
-  implements(IProvidedAttributeSchema)
 
   SC_SCHEMAS = (IProvidedAttributeSchema,)
 
 
+@implementer(IItemSchema)
 class HomogenousContainer(SchemaConfigured, Folder):
   """Abstract base class for the implementation of homogenous containers.
 
@@ -71,7 +72,6 @@ class HomogenousContainer(SchemaConfigured, Folder):
   does not use cooperative super calling.
   """
 
-  implements(IItemSchema)
   SC_SCHEMAS = (IItemSchema,)
 
   # to be overridden by derived classes
@@ -114,7 +114,10 @@ class HomogenousContainer(SchemaConfigured, Folder):
       # cannot use the name "HomogenourContainer" here as it is not yet bound
       scls = super(cls, cls)
     else: raise SystemError("class %s has not set `CONTENT_TYPE`" % str(cls))
-    scls.__class_init__.im_func(cls)
+    try:
+      scls.__class_init__.im_func(cls)
+    except AttributeError:
+      scls.__class_init__(cls)
 
 
 class AttributeContainer(HomogenousContainer):
@@ -124,15 +127,16 @@ class AttributeContainer(HomogenousContainer):
   CONTENT_TYPE = ProvidedAttribute
 
 
+@implementer(IAttributeConsumingServiceSchema)
 class AttributeConsumingService(HomogenousContainer):
   meta_type = "Saml attribute consuming service"
 
-  implements(IAttributeConsumingServiceSchema)
   SC_SCHEMAS = (IAttributeConsumingServiceSchema,)
 
   CONTENT_TYPE = RequestedAttribute
 
 
+@implementer(ISimpleAttributeProvider)
 class SimpleAttributeProvider(AttributeContainer, Role):
   """Attribute provider.
 
@@ -141,7 +145,6 @@ class SimpleAttributeProvider(AttributeContainer, Role):
   """
   meta_type = "Saml attribute provider"
 
-  implements(ISimpleAttributeProvider)
   SC_SCHEMAS = ISimpleAttributeProvider,
 
   def _make_attribute_statement(self, target, req, subject, member, index):
