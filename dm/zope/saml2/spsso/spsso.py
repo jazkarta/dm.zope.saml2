@@ -6,6 +6,7 @@ import hmac
 from cPickle import loads, dumps
 from zlib import compress, decompress
 
+from zope.interface import alsoProvides
 from zope.interface import implements
 from zope.component import getUtility
 
@@ -28,6 +29,7 @@ from dm.zope.saml2.attribute import \
      HomogenousContainer, AttributeConsumingService
 from zope.event import notify
 from dm.zope.saml2.events import SamlUserAuthenticated
+from plone.protect.interfaces import IDisableCSRFProtection
 
 
 class SimpleSpsso(HomogenousContainer, Sso):
@@ -60,6 +62,7 @@ class SimpleSpsso(HomogenousContainer, Sso):
   def authenticate(self, idp, ok, fail, authn_context_class=None, passive=False, force=False, acs_index=None, REQUEST=None):
     """authenticate via *idp*."""
     r = REQUEST or self.REQUEST; R = r.response
+    alsoProvides(r, IDisableCSRFProtection)
     if authn_context_class is None:
       authn_context_class = self.default_authn_context_class
     if authn_context_class is not None:
