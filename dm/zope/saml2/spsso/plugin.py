@@ -72,6 +72,8 @@ class DetachedSimpleSpssoPlugin(BasePlugin, SchemaConfigured):
 
 
   def challenge(self, request, response):
+    if self.authenticateCredentials(self.extractCredentials(self.REQUEST)):
+      return 0
     url = self.absolute_url()
     if request.get("came_from"):
       came_from = request["came_from"]

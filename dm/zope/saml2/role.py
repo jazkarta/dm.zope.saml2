@@ -62,7 +62,7 @@ class Role(RelayStateManager):
     # out of the portal
     pu_tool = getToolByName(self, "portal_url")
     purl = pu_tool()
-    if '/login' in ok or not pu_tool.isURLInPortal(ok):
+    if not ok or '/login' in ok or not pu_tool.isURLInPortal(ok):
       ok = purl
 
     return self.REQUEST.response.redirect(ok)
