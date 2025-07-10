@@ -1,5 +1,6 @@
 # Copyright (C) 2011-2012 by Dr. Dieter Maurer <dieter@handshake.de>
 """Authority and metadata."""
+from logging import getLogger
 from tempfile import NamedTemporaryFile
 
 from persistent import Persistent
@@ -36,6 +37,8 @@ from permission import manage_saml
 from util import ZodbSynchronized
 from entity import ManageableEntityMixin, EntityManagerMixin
 
+
+logger = getLogger(__name__)
 
 # Note: `EntityByUrl` lacks a way to access the context for signature
 #  verification. This is a fundamental problem as we insist on
@@ -171,7 +174,20 @@ class SamlAuthority(SchemaConfiguredEvolution, EntityManagerMixin,
 
   def _update(self):
     """Something important has changed. Invalidate cached data."""
-    self.metadata_by_id(self.entity_id).clear_metadata() # recreated on next use
+    try:
+      self.metadata_by_id(self.entity_id).clear_metadata() # recreated on next use
+    except KeyError as e:
+      logger.error("Error looking up metadata for entity (entity_id changed?). "
+                   "Replacing OwnEntity.")
+      # Look for the primary entity and delete it if it doesn't have the current
+      # entity_id.
+      for entity_id in list(self._entities):
+        entity = self._entities[entity_id]
+        if isinstance(entity, OwnEntity) and entity_id != self.entity_id:
+          del self._entities[entity_id]
+          # Add a new OwnEntity with the current entity_id.
+          self.add_entity(OwnEntity())
+          break
     self._get_signature_cache().invalidate()
 
   def _export_own_metadata(self):
